@@ -61,7 +61,15 @@ router.post('/', async function (req, res, next) {
     images: req.body.images
   });
   await newProduct.save();
-  res.send(newProduct)
+
+  // Create corresponding inventory
+  let inventoryModel = require('../schemas/inventory');
+  let newInventory = new inventoryModel({
+    product: newProduct._id
+  });
+  await newInventory.save();
+
+  res.send({ product: newProduct, inventory: newInventory })
 })
 router.put('/:id', async function (req, res, next) {
   try {
